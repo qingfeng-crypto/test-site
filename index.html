@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>中国人口数据 · 1960—2025</title>
 <meta name="description" content="基于世界银行公开数据的中国人口观测：总量、年龄结构、出生死亡与城镇化。">
-<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="assets/css/style.css?v=2">
 </head>
 <body>
 
@@ -121,8 +121,8 @@
   </div>
 </footer>
 
-<script src="assets/js/echarts.min.js"></script>
-<script src="assets/js/common.js"></script>
+<script src="assets/js/echarts.min.js?v=2"></script>
+<script src="assets/js/common.js?v=2"></script>
 <script>
 (function () {
   "use strict";
@@ -290,6 +290,20 @@
     CHP.fail($("main"), e.message);
   });
 })();
+</script>
+
+<script>
+/* 加载兜底：12 秒内图表仍未渲染，就给出可操作的提示，而不是一直转圈 */
+setTimeout(function () {
+  var t = document.querySelector(".chart");
+  if (t && !t.querySelector("canvas")) {
+    var host = document.getElementById("loading") || document.getElementById("content") || document.body;
+    host.style.display = "";
+    host.innerHTML = '<div class="err"><strong>页面未能正常加载。</strong>'
+      + '常见原因：浏览器缓存了旧版脚本，或网络拦截了资源文件。<br>'
+      + '请按 <b>Ctrl + F5</b> 强制刷新；若仍不行，用无痕窗口打开同一网址试试。</div>';
+  }
+}, 12000);
 </script>
 </body>
 </html>

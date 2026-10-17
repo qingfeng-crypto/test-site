@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>分省与流动 · 中国人口数据</title>
 <meta name="description" content="2020 年第七次全国人口普查：31 个省级行政区常住人口分布。">
-<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="assets/css/style.css?v=2">
 </head>
 <body>
 
@@ -94,8 +94,8 @@
   </div>
 </footer>
 
-<script src="assets/js/echarts.min.js"></script>
-<script src="assets/js/common.js"></script>
+<script src="assets/js/echarts.min.js?v=2"></script>
+<script src="assets/js/common.js?v=2"></script>
 <script>
 (function () {
   "use strict";
@@ -255,6 +255,19 @@
     });
   }).catch(function (e) { CHP.fail($("content"), e.message); });
 })();
+</script>
+
+<script>
+setTimeout(function () {
+  var t = document.querySelector(".chart");
+  if (t && !t.querySelector("canvas")) {
+    var host = document.getElementById("loading") || document.getElementById("content") || document.body;
+    host.style.display = "";
+    host.innerHTML = '<div class="err"><strong>页面未能正常加载。</strong>'
+      + '常见原因：浏览器缓存了旧版脚本，或网络拦截了资源文件。<br>'
+      + '请按 <b>Ctrl + F5</b> 强制刷新；若仍不行，用无痕窗口打开同一网址试试。</div>';
+  }
+}, 12000);
 </script>
 </body>
 </html>
