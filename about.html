@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>数据说明 · 中国人口数据</title>
+<meta name="description" content="本站数据的来源、指标定义、统计口径、已知偏差与更新方式。">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<header class="site-head">
+  <div class="wrap">
+    <div class="brand">
+      <span class="brand-mark">中国人口数据</span>
+      <span class="brand-sub">方法、口径与限制</span>
+    </div>
+    <nav class="site-nav">
+      <a href="index.html">总览</a>
+      <a href="population.html">总量与增长</a>
+      <a href="age.html">年龄与老龄化</a>
+      <a href="birth.html">出生与死亡</a>
+      <a href="province.html">分省与流动</a>
+      <a href="about.html" class="on">数据说明</a>
+    </nav>
+  </div>
+</header>
+
+<section class="page-head">
+  <div class="wrap">
+    <p class="hero-kicker">Appendix</p>
+    <h1>这些数字是怎么来的</h1>
+    <p class="lead">任何一个数字被引用时，都应该能回答三个问题：谁统计的、怎么定义的、误差在哪。这一页把这三件事写清楚。</p>
+  </div>
+</section>
+
+<main class="wrap" style="padding-top:44px">
+
+  <section class="section">
+    <div class="section-head">
+      <h2>一、两个来源，不能混为一谈</h2>
+      <p>本站的数据并非来自单一渠道。全国时序数据与分省数据是两套完全不同的来源，口径不可直接相减。</p>
+    </div>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr><th>用途</th><th>来源</th><th>覆盖</th><th>许可</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>全国历年时序</td>
+            <td>World Bank Open Data</td>
+            <td>1960—2025</td>
+            <td>CC BY 4.0</td>
+          </tr>
+          <tr>
+            <td>分省人口</td>
+            <td>国家统计局《第七次全国人口普查公报（第三号）》</td>
+            <td>2020 年时点</td>
+            <td>政府公开信息</td>
+          </tr>
+          <tr>
+            <td>省级边界</td>
+            <td>阿里云 DataV.GeoAtlas（基于国家基础地理信息中心标准地图）</td>
+            <td>现行行政区划</td>
+            <td>公开数据</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>二、指标目录</h2>
+      <p>全国时序部分共 8 个原始指标，另有 2 个由原始指标计算得出的派生指标。</p>
+    </div>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr><th>指标</th><th>世界银行代码</th><th>单位</th><th class="num">覆盖年份</th><th>性质</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>年末总人口</td><td><code>SP.POP.TOTL</code></td><td>人</td><td class="num">1960—2025</td><td>原始</td></tr>
+          <tr><td>出生率</td><td><code>SP.DYN.CBRT.IN</code></td><td>‰</td><td class="num">1960—2024</td><td>原始</td></tr>
+          <tr><td>死亡率</td><td><code>SP.DYN.CDRT.IN</code></td><td>‰</td><td class="num">1960—2024</td><td>原始</td></tr>
+          <tr><td>0—14 岁人口占比</td><td><code>SP.POP.0014.TO.ZS</code></td><td>%</td><td class="num">1960—2025</td><td>原始</td></tr>
+          <tr><td>15—64 岁人口占比</td><td><code>SP.POP.1564.TO.ZS</code></td><td>%</td><td class="num">1960—2025</td><td>原始</td></tr>
+          <tr><td>65 岁及以上人口占比</td><td><code>SP.POP.65UP.TO.ZS</code></td><td>%</td><td class="num">1960—2025</td><td>原始</td></tr>
+          <tr><td>城镇化率</td><td><code>SP.URB.TOTL.IN.ZS</code></td><td>%</td><td class="num">1960—2025</td><td>原始</td></tr>
+          <tr><td>总和生育率</td><td><code>SP.DYN.TFRT.IN</code></td><td>个</td><td class="num">1960—2024</td><td>原始</td></tr>
+          <tr><td>年增量</td><td>—</td><td>人</td><td class="num">1961—2025</td><td>派生（差分）</td></tr>
+          <tr><td>自然增长率</td><td>—</td><td>‰</td><td class="num">1960—2024</td><td>派生（出生率 − 死亡率）</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>三、三个必须知道的口径问题</h2>
+    </div>
+
+    <div class="facts" style="grid-template-columns:1fr">
+      <div class="fact">
+        <p class="n">口径问题一 · 与统计局不完全一致</p>
+        <p class="t" style="font-size:14px;color:var(--ink-2);line-height:1.85">
+          世界银行的中国人口数据由联合国人口司估算与各国上报数据混合而成。以 2024 年末人口为例：国家统计局口径为 14.08 亿，世界银行为 14.08975 亿，相差约 100 万人。差异幅度很小，但确实存在。<strong>引用本站数字时，请注明"世界银行口径"</strong>，不要与统计局公报数字混用。
+        </p>
+      </div>
+    </div>
+
+    <div class="facts" style="grid-template-columns:1fr;margin-top:16px">
+      <div class="fact">
+        <p class="n">口径问题二 · 分省数据的时点局限</p>
+        <p class="t" style="font-size:14px;color:var(--ink-2);line-height:1.85">
+          分省数据来自第七次全国人口普查，是<strong>单一时点</strong>（2020 年 11 月 1 日零时）的截面数据，没有逐年序列。因此"分省与流动"一页只能展示一个年份的分布，无法呈现各省人口随时间的增减。要补齐这一点，需要逐年整理各省统计年鉴，工作量与出错风险都显著高于现有范围。
+        </p>
+      </div>
+    </div>
+
+    <div class="facts" style="grid-template-columns:1fr;margin-top:16px">
+      <div class="fact">
+        <p class="n">口径问题三 · 港澳台不在统计范围内</p>
+        <p class="t" style="font-size:14px;color:var(--ink-2);line-height:1.85">
+          七普公报的 31 个省级单位指大陆的省、自治区、直辖市，<strong>不含香港、澳门特别行政区和台湾地区</strong>，也不含居住在大陆的外籍人员。地图上这三地按底图显示但不着色，属正常现象，不代表数据缺失。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>四、已知限制</h2>
+      <p>以下限制是这份数据本身的边界，不是页面缺陷。</p>
+    </div>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>限制</th><th>原因</th><th>影响</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>无逐岁年龄结构</td>
+            <td>世界银行仅提供三大年龄段占比</td>
+            <td>无法绘制标准人口金字塔，改用 100% 堆叠面积图</td>
+          </tr>
+          <tr>
+            <td>数据不实时</td>
+            <td>抓取后固化为静态 JSON</td>
+            <td>每年公报发布后需重新运行脚本才会更新</td>
+          </tr>
+          <tr>
+            <td>部分指标滞后一年</td>
+            <td>出生率、死亡率、生育率暂至 2024 年</td>
+            <td>涉及这三项的结论以 2024 年为准</td>
+          </tr>
+          <tr>
+            <td>1960 年前后数据波动大</td>
+            <td>特殊历史时期，统计基础薄弱</td>
+            <td>该区间不适宜做趋势外推</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>五、技术说明</h2>
+      <p>站点为纯静态页面，无后端、无数据库、无用户系统。</p>
+    </div>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>环节</th><th>实现</th></tr></thead>
+        <tbody>
+          <tr><td>托管</td><td>GitHub Pages，自定义域名 + 强制 HTTPS</td></tr>
+          <tr><td>数据抓取</td><td>Python 脚本 <code>tools/fetch_data.py</code>，带指数退避重试与本地缓存</td></tr>
+          <tr><td>数据存储</td><td><code>data/*.json</code> 静态文件，页面通过 fetch 读取</td></tr>
+          <tr><td>图表</td><td>ECharts 5.5.1，本地引入，不依赖任何外部 CDN</td></tr>
+          <tr><td>样式</td><td>原生 CSS，无框架，无构建步骤</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note" style="margin-top:18px">
+      <strong>为什么不用 CDN</strong>　图表库若从外部 CDN 加载，一旦该 CDN 在特定网络环境下不可达，整站图表会全部白屏。本地化多付出约 1 MB 的体积，换来的是"只要能打开页面就能看到图"。
+    </p>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>六、如何更新数据</h2>
+      <p>全国时序数据可一键刷新；分省数据需在公报更新后手工修订。</p>
+    </div>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>场景</th><th>操作</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>刷新全国数据</td>
+            <td>运行 <code>python tools/fetch_data.py</code>（加 <code>--force</code> 强制重新抓取），随后提交 <code>data/national.json</code></td>
+          </tr>
+          <tr>
+            <td>更新分省数据</td>
+            <td>修改 <code>tools/build_province.py</code> 中的省级人口数组，运行脚本。脚本会校验合计是否与公报吻合，不吻合则拒绝写出</td>
+          </tr>
+          <tr>
+            <td>页面发布</td>
+            <td>推送到 <code>main</code> 分支，GitHub Pages 约 1 分钟内自动构建</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>七、一条自我约束</h2>
+    </div>
+    <p class="lead" style="max-width:760px">
+      本站所有数字均来自上述两类公开来源，或由它们直接计算得出。<strong>无法核实的指标一律不展示，不用估算值填充空缺。</strong>
+      宁可少一张图，不留一个编造的数值——人口数据一旦出错，比页面难看严重得多。
+    </p>
+  </section>
+
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <p><strong>回到起点</strong>　<a href="index.html">← 总览</a></p>
+    <p>本站为静态数据展示页面，不代表任何机构立场。数据引用请注明原始来源。</p>
+  </div>
+</footer>
+
+</body>
+</html>

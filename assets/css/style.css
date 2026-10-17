@@ -220,6 +220,16 @@ body {
   min-height: 132px;
 }
 
+a.next-card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color .16s, background .16s;
+}
+
+a.next-card:hover { border-color: var(--accent); background: #fdfcf9; }
+a.next-card:hover .t { color: var(--accent); }
+
 .next-card .t {
   font-size: 14.5px;
   font-weight: 500;
@@ -281,15 +291,139 @@ body {
   font-size: 13.5px;
 }
 
+/* ---------- 子页面标题 ---------- */
+
+.page-head {
+  padding: 56px 0 40px;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.page-head h1 {
+  font-size: 34px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  line-height: 1.32;
+  margin: 0 0 16px;
+  max-width: 720px;
+}
+
+.page-head .lead {
+  font-size: 15.5px;
+  color: var(--ink-2);
+  max-width: 700px;
+  margin: 0;
+}
+
+.page-head .lead em { font-style: normal; color: var(--warm); font-weight: 500; }
+
+/* ---------- 关键事实 ---------- */
+
+.facts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  margin: 0 0 48px;
+}
+
+.fact { background: var(--surface); padding: 22px 22px 20px; }
+
+.fact .n {
+  font-size: 12.5px;
+  color: var(--ink-3);
+  margin: 0 0 10px;
+  letter-spacing: 0.02em;
+}
+
+.fact .v {
+  font-size: 23px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.15;
+}
+
+.fact .v .u { font-size: 13px; color: var(--ink-3); margin-left: 4px; }
+
+.fact .t { font-size: 12.5px; color: var(--ink-2); margin: 8px 0 0; line-height: 1.6; }
+
+/* ---------- 数据表 ---------- */
+
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); background: var(--surface); }
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+  min-width: 520px;
+}
+
+.data-table th {
+  text-align: left;
+  font-weight: 500;
+  color: var(--ink-2);
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--line);
+  background: #faf9f5;
+  font-size: 12.5px;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.data-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+.data-table tr:last-child td { border-bottom: none; }
+.data-table td.num, .data-table th.num { text-align: right; }
+.data-table tbody tr:hover { background: #fcfbf8; }
+
+/* ---------- 注释 ---------- */
+
+.note {
+  font-size: 12.5px;
+  color: var(--ink-3);
+  line-height: 1.8;
+  margin: 14px 0 0;
+  max-width: 860px;
+}
+
+.note strong { color: var(--ink-2); font-weight: 500; }
+
+/* ---------- 双列 ---------- */
+
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+
+.chart.tall { height: 560px; }
+
+.tag {
+  display: inline-block;
+  font-size: 11.5px;
+  padding: 1px 8px;
+  border: 1px solid var(--line);
+  color: var(--ink-3);
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
 /* ---------- responsive ---------- */
 
 @media (max-width: 860px) {
   .wrap { padding: 0 20px; }
   .hero { padding: 44px 0 36px; }
   .hero h1 { font-size: 28px; }
+  .page-head { padding: 40px 0 30px; }
+  .page-head h1 { font-size: 26px; }
   .kpi-row { grid-template-columns: repeat(2, 1fr); }
+  .facts { grid-template-columns: 1fr; }
+  .cols { grid-template-columns: 1fr; }
   .next-grid { grid-template-columns: repeat(2, 1fr); }
   .chart { height: 320px; }
+  .chart.tall { height: 420px; }
 }
 
 @media (max-width: 520px) {

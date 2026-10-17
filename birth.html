@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>出生与死亡 · 中国人口数据</title>
+<meta name="description" content="1960—2025 年中国人口出生率、死亡率、自然增长率与总和生育率的变化。">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<header class="site-head">
+  <div class="wrap">
+    <div class="brand">
+      <span class="brand-mark">中国人口数据</span>
+      <span class="brand-sub">1960—2025 · 世界银行公开数据</span>
+    </div>
+    <nav class="site-nav">
+      <a href="index.html">总览</a>
+      <a href="population.html">总量与增长</a>
+      <a href="age.html">年龄与老龄化</a>
+      <a href="birth.html" class="on">出生与死亡</a>
+      <a href="province.html">分省与流动</a>
+      <a href="about.html">数据说明</a>
+    </nav>
+  </div>
+</header>
+
+<section class="page-head">
+  <div class="wrap">
+    <p class="hero-kicker">Chapter 03</p>
+    <h1>两条线的交叉，决定了一个国家的走向</h1>
+    <p class="lead" id="lead">正在读取数据…</p>
+  </div>
+</section>
+
+<main class="wrap" style="padding-top:44px">
+  <div id="content">
+
+    <div class="facts">
+      <div class="fact"><p class="n">出生率</p><div class="v" id="f1">—</div><p class="t" id="f1t"></p></div>
+      <div class="fact"><p class="n">死亡率</p><div class="v" id="f2">—</div><p class="t" id="f2t"></p></div>
+      <div class="fact"><p class="n">总和生育率</p><div class="v" id="f3">—</div><p class="t" id="f3t"></p></div>
+    </div>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>出生率与死亡率：六十年的收敛</h2>
+        <p>1960 年代两率都极高且波动剧烈，此后同步下行；最终在 2020 年代初完成交叉。</p>
+      </div>
+      <div class="chart" id="c1"></div>
+      <p class="note"><strong>读图提示</strong>　1960 年前后的剧烈波动属于特殊历史时期的异常值，与近年趋势不可直接比较。曲线后半段的平缓下行，才是理解当下的关键区间。</p>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>自然增长率：正负之间</h2>
+        <p>出生率减死亡率。柱子穿过零轴的那一刻，人口增长的动力就换了方向。</p>
+      </div>
+      <div class="chart short" id="c2"></div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>总和生育率：离更替水平有多远</h2>
+        <p>2.1 是人口长期维持不增不减所需的更替水平。低于这条线，代际规模会逐代收缩。</p>
+      </div>
+      <div class="chart short" id="c3"></div>
+      <p class="note"><strong>定义</strong>　总和生育率指一名妇女在育龄期按当前年龄别生育率生育的子女总数。更替水平通常取 2.1，略高于 2 是因为要补偿部分孩子在成年前死亡。世界银行该指标覆盖至 2024 年。</p>
+    </section>
+
+  </div>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <p><strong>下一步</strong>　<a href="province.html">分省与流动 →</a>　把镜头拉近，看这十四亿人分布在哪里。</p>
+  </div>
+</footer>
+
+<script src="assets/js/echarts.min.js"></script>
+<script src="assets/js/common.js"></script>
+<script>
+(function () {
+  "use strict";
+  var $ = function (id) { return document.getElementById(id); };
+
+  CHP.load().then(function (D) {
+    var S = D.series, C = CHP.C;
+    var br = S.birth_rate, dr = S.death_rate, nr = S.natural_rate, tf = S.fertility;
+
+    var years = CHP.yearList(br).filter(function (y) {
+      return dr.data[String(y)] !== undefined && nr.data[String(y)] !== undefined;
+    });
+    var vbr = CHP.values(br, years), vdr = CHP.values(dr, years), vnr = CHP.values(nr, years);
+
+    var lastIdx = years.length - 1;
+    var lastYear = years[lastIdx];
+
+    /* ---- facts ---- */
+    $("f1").innerHTML = vbr[lastIdx].toFixed(2) + '<span class="u">‰</span>';
+    $("f1t").textContent = lastYear + " 年，每千人出生 " + vbr[lastIdx].toFixed(1) + " 人";
+
+    $("f2").innerHTML = vdr[lastIdx].toFixed(2) + '<span class="u">‰</span>';
+    $("f2t").textContent = lastYear + " 年，已高于出生率";
+
+    var tfLast = CHP.last(tf);
+    $("f3").innerHTML = tfLast.value.toFixed(2) + '<span class="u">个</span>';
+    $("f3t").textContent = tfLast.year + " 年，仅为更替水平 2.1 的 "
+      + (tfLast.value / 2.1 * 100).toFixed(0) + "%";
+
+    /* ---- lead ---- */
+    var cross = null;
+    for (var i = 1; i < years.length; i++) {
+      if (vnr[i] < 0 && vnr[i - 1] >= 0) cross = years[i];
+    }
+    var tfYears = CHP.yearList(tf);
+    var belowRepl = null;
+    for (var j = 0; j < tfYears.length; j++) {
+      if (tf.data[String(tfYears[j])] < 2.1) { belowRepl = tfYears[j]; break; }
+    }
+    $("lead").innerHTML = "总和生育率在 <em>" + belowRepl + " 年</em>跌破 2.1 的更替水平，"
+      + "出生率与死亡率则在 <em>" + cross + " 年</em>完成交叉。"
+      + "到 " + lastYear + " 年，出生率 " + vbr[lastIdx].toFixed(2) + "‰ 已低于死亡率 "
+      + vdr[lastIdx].toFixed(2) + "‰，自然增长率为 "
+      + (vnr[lastIdx] >= 0 ? "+" : "\u2212") + Math.abs(vnr[lastIdx]).toFixed(2) + "‰。";
+
+    /* ---- 图 1 ---- */
+    var c1 = echarts.init($("c1"));
+    c1.setOption({
+      grid: { left: 52, right: 34, top: 46, bottom: 42 },
+      legend: {
+        top: 2, right: 4, itemWidth: 14, itemHeight: 2, itemGap: 18,
+        textStyle: { color: C.ink2, fontSize: 12, fontFamily: CHP.FONT }
+      },
+      tooltip: CHP.tooltipCommon({
+        trigger: "axis",
+        valueFormatter: function (v) {
+          return v === null || v === undefined ? "—" : Number(v).toFixed(2) + "‰";
+        }
+      }),
+      xAxis: CHP.axisCommon({
+        type: "category", boundaryGap: false, data: years,
+        axisLabel: { color: C.ink3, fontSize: 11.5, interval: 9 }
+      }),
+      yAxis: CHP.axisCommon({ type: "value", name: "‰", nameGap: 18 }),
+      series: [
+        CHP.lineSeries("出生率", vbr, C.accent, { width: 2 }),
+        CHP.lineSeries("死亡率", vdr, C.warm, { width: 2 }),
+        CHP.lineSeries("自然增长率", vnr, C.ink3, { width: 1.4 })
+      ]
+    });
+
+    /* ---- 图 2 自然增长率柱 ---- */
+    var c2 = echarts.init($("c2"));
+    c2.setOption({
+      grid: { left: 52, right: 34, top: 26, bottom: 42 },
+      tooltip: CHP.tooltipCommon({
+        trigger: "axis",
+        valueFormatter: function (v) { return Number(v).toFixed(2) + "‰"; }
+      }),
+      xAxis: CHP.axisCommon({
+        type: "category", data: years,
+        axisLabel: { color: C.ink3, fontSize: 11.5, interval: 9 }
+      }),
+      yAxis: CHP.axisCommon({ type: "value", name: "‰", nameGap: 18 }),
+      series: [{
+        type: "bar", name: "自然增长率", barWidth: "62%",
+        data: vnr.map(function (v) {
+          return {
+            value: v,
+            itemStyle: { color: v >= 0 ? C.accent2 : C.warm, opacity: v >= 0 ? 0.82 : 0.92 }
+          };
+        })
+      }]
+    });
+
+    /* ---- 图 3 总和生育率 ---- */
+    var s3 = CHP.lineSeries("总和生育率", CHP.values(tf, tfYears), C.gold, { width: 2, area: true });
+    s3.markLine = {
+      silent: true, symbol: "none",
+      lineStyle: { color: C.ink3, type: "dashed", width: 1 },
+      label: {
+        position: "insideEndTop", color: C.ink3, fontSize: 11.5,
+        fontFamily: CHP.FONT, formatter: "更替水平 2.1", distance: 6
+      },
+      data: [{ yAxis: 2.1 }]
+    };
+    var c3 = echarts.init($("c3"));
+    c3.setOption({
+      grid: { left: 52, right: 120, top: 26, bottom: 42 },
+      tooltip: CHP.tooltipCommon({
+        trigger: "axis",
+        valueFormatter: function (v) { return Number(v).toFixed(2) + " 个"; }
+      }),
+      xAxis: CHP.axisCommon({
+        type: "category", boundaryGap: false, data: tfYears,
+        axisLabel: { color: C.ink3, fontSize: 11.5, interval: 9 }
+      }),
+      yAxis: CHP.axisCommon({
+        type: "value", min: 0, max: 7, name: "个", nameGap: 16,
+        axisLabel: { color: C.ink3, fontSize: 11.5 }
+      }),
+      series: [s3]
+    });
+
+    window.addEventListener("resize", function () {
+      [c1, c2, c3].forEach(function (c) { c.resize(); });
+    });
+  }).catch(function (e) { CHP.fail($("content"), e.message); });
+})();
+</script>
+</body>
+</html>

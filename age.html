@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>年龄与老龄化 · 中国人口数据</title>
+<meta name="description" content="1960—2025 年中国人口年龄结构变化：少儿、劳动年龄与老年人口占比，抚养比与老龄化进程。">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<header class="site-head">
+  <div class="wrap">
+    <div class="brand">
+      <span class="brand-mark">中国人口数据</span>
+      <span class="brand-sub">1960—2025 · 世界银行公开数据</span>
+    </div>
+    <nav class="site-nav">
+      <a href="index.html">总览</a>
+      <a href="population.html">总量与增长</a>
+      <a href="age.html" class="on">年龄与老龄化</a>
+      <a href="birth.html">出生与死亡</a>
+      <a href="province.html">分省与流动</a>
+      <a href="about.html">数据说明</a>
+    </nav>
+  </div>
+</header>
+
+<section class="page-head">
+  <div class="wrap">
+    <p class="hero-kicker">Chapter 02</p>
+    <h1>结构变了：从金字塔到倒梯形</h1>
+    <p class="lead" id="lead">正在读取数据…</p>
+  </div>
+</section>
+
+<main class="wrap" style="padding-top:44px">
+  <div id="content">
+
+    <div class="facts">
+      <div class="fact"><p class="n">65 岁及以上占比</p><div class="v" id="f1">—</div><p class="t" id="f1t"></p></div>
+      <div class="fact"><p class="n">0—14 岁占比</p><div class="v" id="f2">—</div><p class="t" id="f2t"></p></div>
+      <div class="fact"><p class="n">总抚养比</p><div class="v" id="f3">—</div><p class="t" id="f3t"></p></div>
+    </div>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>三个年龄段的此消彼长</h2>
+        <p>三段占比堆叠到 100%，可以直观看到谁在扩张、谁在收缩。</p>
+      </div>
+      <div class="chart" id="c1"></div>
+      <p class="note"><strong>关于"人口金字塔"</strong>　传统的人口金字塔需要单岁年龄组数据（每一年龄各有多少人）。本站采用的世界银行指标只提供三大年龄段占比，因此无法绘制逐岁金字塔。用 100% 堆叠面积图呈现结构变化，是这份数据能支撑的最接近的表达。若以后接入普查单岁数据，会补上真正的金字塔。</p>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>老龄化：两条红线之间的二十年</h2>
+        <p>国际通行标准：65 岁以上占比达 7% 为老龄化社会，14% 为深度老龄化，20% 为超老龄化。</p>
+      </div>
+      <div class="chart short" id="c2"></div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>抚养比：每 100 个劳动年龄人口要养多少人</h2>
+        <p>少儿抚养比在下降，老年抚养比在上升，两者相加构成总抚养比。</p>
+      </div>
+      <div class="chart short" id="c3"></div>
+      <p class="note"><strong>定义</strong>　少儿抚养比 = 0—14 岁人口 ÷ 15—64 岁人口 × 100；老年抚养比 = 65 岁及以上人口 ÷ 15—64 岁人口 × 100；总抚养比为两者之和。数值越高，劳动年龄人口承担的赡养压力越大。</p>
+    </section>
+
+  </div>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <p><strong>下一步</strong>　<a href="birth.html">出生与死亡 →</a>　老龄化是结果，原因在出生这一端。</p>
+  </div>
+</footer>
+
+<script src="assets/js/echarts.min.js"></script>
+<script src="assets/js/common.js"></script>
+<script>
+(function () {
+  "use strict";
+  var $ = function (id) { return document.getElementById(id); };
+
+  CHP.load().then(function (D) {
+    var S = D.series, C = CHP.C;
+    var y0 = S.age_0_14, y15 = S.age_15_64, y65 = S.age_65_up;
+
+    var years = CHP.yearList(y65).filter(function (y) {
+      return y0.data[String(y)] !== undefined && y15.data[String(y)] !== undefined;
+    });
+
+    var v0 = years.map(function (y) { return y0.data[String(y)]; });
+    var v15 = years.map(function (y) { return y15.data[String(y)]; });
+    var v65 = years.map(function (y) { return y65.data[String(y)]; });
+
+    var lastY = years[years.length - 1];
+    var o65 = v65[v65.length - 1], o0 = v0[v0.length - 1], o15 = v15[v15.length - 1];
+    var burden = (o0 + o65) / o15 * 100;
+
+    /* ---- facts ---- */
+    $("f1").innerHTML = o65.toFixed(2) + '<span class="u">%</span>';
+    $("f1t").textContent = lastY + " 年，每 7 个人中约有 1 位老人";
+
+    $("f2").innerHTML = o0.toFixed(2) + '<span class="u">%</span>';
+    $("f2t").textContent = lastY + " 年，比 1960 年代下降超过一半";
+
+    $("f3").innerHTML = burden.toFixed(1) + '<span class="u">%</span>';
+    $("f3t").textContent = lastY + " 年，每 100 名劳动年龄人口负担 "
+      + burden.toFixed(0) + " 人";
+
+    /* ---- lead ---- */
+    var cross7 = null, cross14 = null;
+    for (var i = 0; i < years.length; i++) {
+      if (cross7 === null && v65[i] >= 7) cross7 = years[i];
+      if (cross14 === null && v65[i] >= 14) cross14 = years[i];
+    }
+    $("lead").innerHTML = "65 岁及以上人口占比在 <em>" + cross7 + " 年</em>越过 7% 的老龄化线，"
+      + "又在 <em>" + cross14 + " 年</em>越过 14% 的深度老龄化线。"
+      + "同期 0—14 岁人口占比从 " + v0[0].toFixed(1) + "% 降到 " + o0.toFixed(1) + "%，"
+      + "两端的置换正在改变整个社会的年龄轮廓。";
+
+    /* ---- 图 1 堆叠 ---- */
+    var c1 = echarts.init($("c1"));
+    c1.setOption({
+      grid: { left: 52, right: 34, top: 46, bottom: 42 },
+      legend: {
+        top: 2, right: 4, itemWidth: 12, itemHeight: 12, itemGap: 18,
+        textStyle: { color: C.ink2, fontSize: 12, fontFamily: CHP.FONT }
+      },
+      tooltip: CHP.tooltipCommon({
+        trigger: "axis",
+        valueFormatter: function (v) { return Number(v).toFixed(2) + "%"; }
+      }),
+      xAxis: CHP.axisCommon({
+        type: "category", boundaryGap: false, data: years,
+        axisLabel: { color: C.ink3, fontSize: 11.5, interval: 9 }
+      }),
+      yAxis: CHP.axisCommon({
+        type: "value", min: 0, max: 100, name: "%", nameGap: 16,
+        axisLabel: { color: C.ink3, fontSize: 11.5 }
+      }),
+      series: [
+        { name: "0—14 岁", type: "line", stack: "a", smooth: false, showSymbol: false,
+          data: v0, lineStyle: { width: 0.8, color: "#a9c3cc" },
+          itemStyle: { color: "#a9c3cc" }, areaStyle: { color: "#cfe0e5", opacity: 0.95 } },
+        { name: "15—64 岁", type: "line", stack: "a", smooth: false, showSymbol: false,
+          data: v15, lineStyle: { width: 0.8, color: C.accent },
+          itemStyle: { color: C.accent }, areaStyle: { color: C.accent, opacity: 0.9 } },
+        { name: "65 岁及以上", type: "line", stack: "a", smooth: false, showSymbol: false,
+          data: v65, lineStyle: { width: 0.8, color: C.warm },
+          itemStyle: { color: C.warm }, areaStyle: { color: C.warm, opacity: 0.9 } }
+      ]
+    });
+
+    /* ---- 图 2 老龄化红线 ---- */
+    var s65 = CHP.lineSeries("65 岁及以上占比", v65, C.warm, { width: 2.2, area: true });
+    s65.markLine = {
+      silent: true, symbol: "none",
+      lineStyle: { color: C.ink3, type: "dashed", width: 1 },
+      label: {
+        position: "insideStartTop", color: C.ink3, fontSize: 11.5, fontFamily: CHP.FONT,
+        formatter: "{b}", distance: 6
+      },
+      data: [
+        { yAxis: 7, name: "老龄化 7%" },
+        { yAxis: 14, name: "深度老龄化 14%" },
+        { yAxis: 20, name: "超老龄化 20%" }
+      ]
+    };
+    var c2 = echarts.init($("c2"));
+    c2.setOption({
+      grid: { left: 52, right: 96, top: 30, bottom: 42 },
+      tooltip: CHP.tooltipCommon({
+        trigger: "axis",
+        valueFormatter: function (v) { return Number(v).toFixed(2) + "%"; }
+      }),
+      xAxis: CHP.axisCommon({
+        type: "category", boundaryGap: false, data: years,
+        axisLabel: { color: C.ink3, fontSize: 11.5, interval: 9 }
+      }),
+      yAxis: CHP.axisCommon({
+        type: "value", min: 0, max: 24, name: "%", nameGap: 16,
+        axisLabel: { color: C.ink3, fontSize: 11.5 }
+      }),
+      series: [s65]
+    });
+
+    /* ---- 图 3 抚养比 ---- */
+    var child = [], oldd = [], total = [];
+    years.forEach(function (y, i) {
+      var c = v0[i] / v15[i] * 100;
+      var o = v65[i] / v15[i] * 100;
+      child.push(+c.toFixed(1));
+      oldd.push(+o.toFixed(1));
+      total.push(+(c + o).toFixed(1));
+    });
+    var c3 = echarts.init($("c3"));
+    c3.setOption({
+      grid: { left: 52, right: 34, top: 46, bottom: 42 },
+      legend: {
+        top: 2, right: 4, itemWidth: 14, itemHeight: 2, itemGap: 18,
+        textStyle: { color: C.ink2, fontSize: 12, fontFamily: CHP.FONT }
+      },
+      tooltip: CHP.tooltipCommon({
+        trigger: "axis",
+        valueFormatter: function (v) { return Number(v).toFixed(1); }
+      }),
+      xAxis: CHP.axisCommon({
+        type: "category", boundaryGap: false, data: years,
+        axisLabel: { color: C.ink3, fontSize: 11.5, interval: 9 }
+      }),
+      yAxis: CHP.axisCommon({ type: "value", name: "比值", nameGap: 16 }),
+      series: [
+        CHP.lineSeries("少儿抚养比", child, C.accent2, { width: 1.8 }),
+        CHP.lineSeries("老年抚养比", oldd, C.warm, { width: 1.8 }),
+        CHP.lineSeries("总抚养比", total, C.ink2, { width: 2 })
+      ]
+    });
+
+    window.addEventListener("resize", function () {
+      [c1, c2, c3].forEach(function (c) { c.resize(); });
+    });
+  }).catch(function (e) { CHP.fail($("content"), e.message); });
+})();
+</script>
+</body>
+</html>

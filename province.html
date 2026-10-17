@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>分省与流动 · 中国人口数据</title>
+<meta name="description" content="2020 年第七次全国人口普查：31 个省级行政区常住人口分布。">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<header class="site-head">
+  <div class="wrap">
+    <div class="brand">
+      <span class="brand-mark">中国人口数据</span>
+      <span class="brand-sub">2020 年第七次全国人口普查</span>
+    </div>
+    <nav class="site-nav">
+      <a href="index.html">总览</a>
+      <a href="population.html">总量与增长</a>
+      <a href="age.html">年龄与老龄化</a>
+      <a href="birth.html">出生与死亡</a>
+      <a href="province.html" class="on">分省与流动</a>
+      <a href="about.html">数据说明</a>
+    </nav>
+  </div>
+</header>
+
+<section class="page-head">
+  <div class="wrap">
+    <p class="hero-kicker">Chapter 04</p>
+    <h1>十四亿人，并不均匀地落在这张地图上</h1>
+    <p class="lead" id="lead">正在读取数据…</p>
+  </div>
+</section>
+
+<main class="wrap" style="padding-top:44px">
+  <div id="content">
+
+    <div class="facts">
+      <div class="fact"><p class="n">人口第一大省</p><div class="v" id="f1">—</div><p class="t" id="f1t"></p></div>
+      <div class="fact"><p class="n">前五省合计占比</p><div class="v" id="f2">—</div><p class="t" id="f2t"></p></div>
+      <div class="fact"><p class="n">东北三省合计</p><div class="v" id="f3">—</div><p class="t" id="f3t"></p></div>
+    </div>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>省级人口分布</h2>
+        <p>颜色越深表示常住人口越多。灰色区域为未纳入本次统计口径的地区。</p>
+      </div>
+      <div class="chart tall" id="c1"></div>
+      <p class="note">
+        <strong>地图说明</strong>　底图数据来自阿里云 DataV.GeoAtlas（基于国家基础地理信息中心标准地图），包含台湾省、香港特别行政区、澳门特别行政区及南海诸岛。本图仅用于统计数据的可视化展示，不作为国界划定依据。图中港澳台地区未纳入七普公报的 31 个省级单位口径，故不着色。
+      </p>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>人口最多的十五个省份</h2>
+        <p>单位：万人。条形长度即常住人口规模。</p>
+      </div>
+      <div class="chart tall" id="c2"></div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>完整数据</h2>
+        <p>31 个省级行政区，按常住人口降序排列。</p>
+      </div>
+      <div class="table-wrap">
+        <table class="data-table" id="tbl">
+          <thead>
+            <tr>
+              <th class="num">#</th><th>省级行政区</th>
+              <th class="num">常住人口（人）</th><th class="num">占全国比重</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <p class="note">
+        <strong>数据来源</strong>　国家统计局《第七次全国人口普查公报（第三号）》，2021 年 5 月 11 日发布，标准时点为 2020 年 11 月 1 日零时。
+        <strong>校验</strong>　31 个省级单位合计 1,409,778,724 人，加现役军人 2,000,000 人，与公报全国总人口 1,411,778,724 人完全吻合。
+        <strong>口径</strong>　常住人口，不含港澳台地区人口及居住在内地的外籍人员。
+      </p>
+    </section>
+
+  </div>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <p><strong>下一步</strong>　<a href="about.html">数据说明 →</a>　了解每个指标的确切定义与已知偏差。</p>
+  </div>
+</footer>
+
+<script src="assets/js/echarts.min.js"></script>
+<script src="assets/js/common.js"></script>
+<script>
+(function () {
+  "use strict";
+  var $ = function (id) { return document.getElementById(id); };
+
+  Promise.all([
+    fetch("data/province.json").then(function (r) { return r.json(); }),
+    fetch("assets/map/china-provinces.json").then(function (r) { return r.json(); })
+  ]).then(function (res) {
+    var P = res[0], geo = res[1];
+    var C = CHP.C;
+    var rows = P.provinces;
+
+    /* 给九段线命名，否则 ECharts 无法正常渲染该区域 */
+    geo.features.forEach(function (f) {
+      if (!f.properties.name) {
+        f.properties.name = "南海诸岛";
+        f.properties.adcode = "100000_JD";
+      }
+    });
+    echarts.registerMap("chinaProvinces", geo);
+
+    /* ---- facts ---- */
+    var top1 = rows[0];
+    $("f1").innerHTML = top1.name.replace(/省|市|自治区|特别行政区/g, "")
+      + '<span class="u">' + (top1.population / 1e8).toFixed(2) + " 亿</span>";
+    $("f1t").textContent = "占全国 " + top1.share.toFixed(2) + "%";
+
+    var top5 = rows.slice(0, 5);
+    var top5sum = top5.reduce(function (a, b) { return a + b.population; }, 0);
+    $("f2").innerHTML = (top5sum / P.meta.national_total * 100).toFixed(1) + '<span class="u">%</span>';
+    $("f2t").textContent = top5.map(function (r) {
+      return r.name.replace(/省|市|自治区/g, "");
+    }).join("、");
+
+    var ne = ["黑龙江省", "吉林省", "辽宁省"].map(function (n) {
+      return rows.filter(function (r) { return r.name === n; })[0];
+    });
+    var neSum = ne.reduce(function (a, b) { return a + b.population; }, 0);
+    $("f3").innerHTML = (neSum / 1e4).toFixed(0) + '<span class="u">万人</span>';
+    $("f3t").textContent = "占全国 " + (neSum / P.meta.national_total * 100).toFixed(1) + "%";
+
+    /* ---- lead ---- */
+    var maxP = rows[0], minP = rows[rows.length - 1];
+    $("lead").innerHTML = "广东一省住着 " + (maxP.population / 1e4).toFixed(0) + " 万人，"
+      + "超过西藏（" + (minP.population / 1e4).toFixed(0) + " 万）的 "
+      + Math.round(maxP.population / minP.population) + " 倍。"
+      + "人口最多的五个省份合计占全国 "
+      + (top5sum / P.meta.national_total * 100).toFixed(1) + "%。";
+
+    /* ---- 地图 ---- */
+    var mapData = rows.map(function (r) {
+      return { name: r.name, value: r.population };
+    });
+
+    var c1 = echarts.init($("c1"));
+    c1.setOption({
+      tooltip: CHP.tooltipCommon({
+        trigger: "item",
+        formatter: function (p) {
+          if (!p.value) return p.name + "<br/>未纳入本次统计口径";
+          var r = rows.filter(function (x) { return x.name === p.name; })[0];
+          return "<b>" + p.name + "</b><br/>常住人口 "
+            + (p.value / 1e4).toFixed(1) + " 万人<br/>占全国 "
+            + (r ? r.share.toFixed(2) : "—") + "%";
+        }
+      }),
+      visualMap: {
+        type: "piecewise",
+        left: 20, bottom: 20,
+        itemWidth: 16, itemHeight: 12, itemGap: 8,
+        textStyle: { color: C.ink2, fontSize: 11.5, fontFamily: CHP.FONT },
+        pieces: [
+          { min: 100000000, label: "1 亿以上", color: "#123c4a" },
+          { min: 80000000, max: 99999999, label: "8000 万—1 亿", color: "#1d5666" },
+          { min: 50000000, max: 79999999, label: "5000—8000 万", color: "#2e7183" },
+          { min: 30000000, max: 49999999, label: "3000—5000 万", color: "#5b93a3" },
+          { min: 10000000, max: 29999999, label: "1000—3000 万", color: "#94b9c4" },
+          { max: 9999999, label: "1000 万以下", color: "#cfdee3" }
+        ]
+      },
+      series: [{
+        type: "map",
+        map: "chinaProvinces",
+        roam: false,
+        zoom: 1.18,
+        layoutCenter: ["50%", "48%"],
+        layoutSize: "108%",
+        label: { show: false },
+        itemStyle: {
+          areaColor: "#f4f2ec",
+          borderColor: "#b8b3a6",
+          borderWidth: 0.7
+        },
+        emphasis: {
+          label: {
+            show: true, color: "#fff", fontSize: 12, fontFamily: CHP.FONT
+          },
+          itemStyle: { areaColor: "#b8552f", borderColor: "#8a3b1e" }
+        },
+        select: { disabled: true },
+        regions: [{
+          name: "南海诸岛",
+          itemStyle: { areaColor: "#f4f2ec", borderColor: "#8b877e", borderWidth: 0.9 }
+        }],
+        data: mapData
+      }]
+    });
+
+    /* ---- Top 15 条形 ---- */
+    var top15 = rows.slice(0, 15).slice().reverse();
+    var c2 = echarts.init($("c2"));
+    c2.setOption({
+      grid: { left: 96, right: 76, top: 20, bottom: 34 },
+      tooltip: CHP.tooltipCommon({
+        trigger: "item",
+        formatter: function (p) {
+          return "<b>" + p.name + "</b><br/>常住人口 " + p.value + " 万人";
+        }
+      }),
+      xAxis: CHP.axisCommon({
+        type: "value", name: "万人", nameGap: 16,
+        axisLabel: { color: C.ink3, fontSize: 11.5 }
+      }),
+      yAxis: CHP.axisCommon({
+        type: "category",
+        data: top15.map(function (r) { return r.name.replace(/省|市|自治区|特别行政区/g, ""); }),
+        splitLine: { show: false },
+        axisLabel: { color: C.ink2, fontSize: 12, fontFamily: CHP.FONT }
+      }),
+      series: [{
+        type: "bar", barWidth: "64%",
+        data: top15.map(function (r) {
+          return { value: +(r.population / 1e4).toFixed(0), itemStyle: { color: C.accent2 } };
+        }),
+        label: {
+          show: true, position: "right", distance: 8,
+          color: C.ink3, fontSize: 11.5, fontFamily: CHP.FONT,
+          formatter: function (p) { return p.value.toLocaleString(); }
+        }
+      }]
+    });
+
+    /* ---- 表格 ---- */
+    var tb = $("tbl").querySelector("tbody");
+    rows.forEach(function (r, i) {
+      var tr = document.createElement("tr");
+      tr.innerHTML = '<td class="num">' + (i + 1) + "</td>"
+        + "<td>" + r.name + "</td>"
+        + '<td class="num">' + r.population.toLocaleString() + "</td>"
+        + '<td class="num">' + r.share.toFixed(2) + "%</td>";
+      tb.appendChild(tr);
+    });
+
+    window.addEventListener("resize", function () {
+      [c1, c2].forEach(function (c) { c.resize(); });
+    });
+  }).catch(function (e) { CHP.fail($("content"), e.message); });
+})();
+</script>
+</body>
+</html>

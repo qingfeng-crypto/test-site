@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>总量与增长 · 中国人口数据</title>
+<meta name="description" content="1960—2025 年中国人口总量、年增量与增长速度的完整序列。">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<header class="site-head">
+  <div class="wrap">
+    <div class="brand">
+      <span class="brand-mark">中国人口数据</span>
+      <span class="brand-sub">1960—2025 · 世界银行公开数据</span>
+    </div>
+    <nav class="site-nav">
+      <a href="index.html">总览</a>
+      <a href="population.html" class="on">总量与增长</a>
+      <a href="age.html">年龄与老龄化</a>
+      <a href="birth.html">出生与死亡</a>
+      <a href="province.html">分省与流动</a>
+      <a href="about.html">数据说明</a>
+    </nav>
+  </div>
+</header>
+
+<section class="page-head">
+  <div class="wrap">
+    <p class="hero-kicker">Chapter 01</p>
+    <h1>六十五年，一条先陡后缓再下行的曲线</h1>
+    <p class="lead" id="lead">正在读取数据…</p>
+  </div>
+</section>
+
+<main class="wrap" style="padding-top:44px">
+  <div id="content">
+
+    <div class="facts" id="facts">
+      <div class="fact"><p class="n">峰值</p><div class="v" id="f1">—</div><p class="t" id="f1t"></p></div>
+      <div class="fact"><p class="n">最新</p><div class="v" id="f2">—</div><p class="t" id="f2t"></p></div>
+      <div class="fact"><p class="n">增长最快的一年</p><div class="v" id="f3">—</div><p class="t" id="f3t"></p></div>
+    </div>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>总量：十四亿的上行与回落</h2>
+        <p>纵轴从零开始，不做截断——曲线的绝对高度就是真实的人口规模。</p>
+      </div>
+      <div class="chart" id="c1"></div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>年增量：每年净增多少人</h2>
+        <p>青色为正增长，赭色为负增长。柱子在 1990 年前后开始系统性收窄。</p>
+      </div>
+      <div class="chart short" id="c2"></div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>增长速度：从百分之二到负数</h2>
+        <p>年增长率把总量差异标准化，更能看清趋势的转折。</p>
+      </div>
+      <div class="chart short" id="c3"></div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>关键年份</h2>
+        <p>跨越六十余年的几个坐标点。</p>
+      </div>
+      <div class="table-wrap">
+        <table class="data-table" id="tbl">
+          <thead>
+            <tr><th>年份</th><th class="num">总人口（万人）</th><th class="num">较上年（万人）</th><th class="num">增长率</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <p class="note"><strong>数据来源</strong>　World Bank Open Data，<code>SP.POP.TOTL</code>。增量为相邻两年差分，增长率为增量除以上一年总量。世界银行的中国人口数据由联合国人口司估算与各国上报数据混合而成，与中国国家统计局口径存在小幅差异。</p>
+    </section>
+
+  </div>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <p><strong>下一步</strong>　<a href="age.html">年龄与老龄化 →</a>　看看十四亿人是由什么年龄段构成的。</p>
+  </div>
+</footer>
+
+<script src="assets/js/echarts.min.js"></script>
+<script src="assets/js/common.js"></script>
+<script>
+(function () {
+  "use strict";
+  var $ = function (id) { return document.getElementById(id); };
+
+  CHP.load().then(function (D) {
+    var S = D.series, C = CHP.C;
+    var pop = S.population, chg = S.annual_change;
+    var ys = CHP.yearList(pop), vals = CHP.values(pop, ys);
+    var peak = CHP.peak(pop), lastV = CHP.last(pop);
+
+    /* ---- facts ---- */
+    $("f1").innerHTML = CHP.yi(peak.value) + '<span class="u">亿</span>';
+    $("f1t").textContent = peak.year + " 年，此后未再回到这一水平";
+
+    $("f2").innerHTML = CHP.yi(lastV.value) + '<span class="u">亿</span>';
+    $("f2t").textContent = lastV.year + " 年，比峰值少 "
+      + ((peak.value - lastV.value) / 1e4).toFixed(0) + " 万人";
+
+    var ys2 = CHP.yearList(chg), v2 = CHP.values(chg, ys2);
+    var maxIdx = 0;
+    v2.forEach(function (v, i) { if (v > v2[maxIdx]) maxIdx = i; });
+    $("f3").innerHTML = (v2[maxIdx] / 1e4).toFixed(0) + '<span class="u">万人</span>';
+    $("f3t").textContent = ys2[maxIdx] + " 年，承接前一年的非常规低谷";
+
+    /* ---- lead ---- */
+    var negYears = ys2.filter(function (y) { return chg.data[String(y)] < 0; });
+    var negFrom = negYears.length ? Math.min.apply(null, negYears.filter(function (y) { return y > 2000; })) : null;
+    $("lead").innerHTML = "从 1960 年的 " + CHP.yi(vals[0]) + " 亿到 " + peak.year + " 年的 "
+      + CHP.yi(peak.value) + " 亿，中国人口用六十年翻了约一倍。"
+      + (negFrom ? "而自 <em>" + negFrom + " 年</em>起，这条曲线开始向下。" : "");
+
+    /* ---- 图 1 ---- */
+    var c1 = echarts.init($("c1"));
+    var s1 = CHP.lineSeries("总人口",
+      vals.map(function (v) { return +(v / 1e8).toFixed(3); }),
+      C.accent, { width: 2.2, area: true });
+    s1.markPoint = {
+      symbol: "circle", symbolSize: 8,
+      itemStyle: { color: C.warm },
+      label: {
+        show: true, position: "left", distance: 12,
+        formatter: peak.year + " 峰值 " + CHP.yi(peak.value) + " 亿",
+        color: C.ink2, fontSize: 12, fontFamily: CHP.FONT,
+        backgroundColor: "#fff", borderColor: C.line, borderWidth: 1,
+        borderRadius: 2, padding: [4, 8]
+      },
+      data: [{ coord: [String(peak.year), peak.value / 1e8] }]
+    };
+    c1.setOption({
+      grid: { left: 58, right: 34, top: 34, bottom: 42 },
+      tooltip: CHP.tooltipCommon({
+        trigger: "axis",
+        formatter: function (ps) {
+          return "<b>" + ps[0].axisValue + " 年</b><br/>总人口 "
+            + Number(ps[0].value).toFixed(2) + " 亿";
+        }
+      }),
+      xAxis: CHP.axisCommon({
+        type: "category", boundaryGap: false, data: ys,
+        axisLabel: { color: C.ink3, fontSize: 11.5, interval: 9 }
+      }),
+      yAxis: CHP.axisCommon({ type: "value", min: 0, max: 15.2, name: "亿人", nameGap: 18 }),
+      series: [s1]
+    });
+
+    /* ---- 图 2 ---- */
+    var c2 = echarts.init($("c2"));
+    c2.setOption({
+      grid: { left: 58, right: 34, top: 26, bottom: 42 },
+      tooltip: CHP.tooltipCommon({
+        trigger: "axis",
+        formatter: function (ps) {
+          var v = Number(ps[0].value);
+          return "<b>" + ps[0].axisValue + " 年</b><br/>较上年 "
+            + (v >= 0 ? "+" : "\u2212") + Math.abs(v).toFixed(0) + " 万人";
+        }
+      }),
+      xAxis: CHP.axisCommon({
+        type: "category", data: ys2,
+        axisLabel: { color: C.ink3, fontSize: 11.5, interval: 9 }
+      }),
+      yAxis: CHP.axisCommon({ type: "value", name: "万人", nameGap: 18 }),
+      series: [{
+        type: "bar", name: "年增量", barWidth: "62%",
+        data: v2.map(function (v) {
+          return {
+            value: +(v / 1e4).toFixed(0),
+            itemStyle: { color: v >= 0 ? C.accent2 : C.warm, opacity: v >= 0 ? 0.82 : 0.9 }
+          };
+        })
+      }]
+    });
+
+    /* ---- 图 3 增长率 ---- */
+    var growth = [];
+    for (var i = 1; i < ys.length; i++) {
+      var prev = pop.data[String(ys[i - 1])], cur = pop.data[String(ys[i])];
+      if (ys[i] - ys[i - 1] === 1 && prev) {
+        growth.push({ y: ys[i], v: +((cur - prev) / prev * 100).toFixed(3) });
+      }
+    }
+    var c3 = echarts.init($("c3"));
+    c3.setOption({
+      grid: { left: 58, right: 34, top: 26, bottom: 42 },
+      tooltip: CHP.tooltipCommon({
+        trigger: "axis",
+        valueFormatter: function (v) { return Number(v).toFixed(2) + "%"; }
+      }),
+      xAxis: CHP.axisCommon({
+        type: "category", boundaryGap: false,
+        data: growth.map(function (d) { return d.y; }),
+        axisLabel: { color: C.ink3, fontSize: 11.5, interval: 9 }
+      }),
+      yAxis: CHP.axisCommon({
+        type: "value", name: "%", nameGap: 18,
+        axisLabel: { color: C.ink3, fontSize: 11.5 }
+      }),
+      series: [CHP.lineSeries("年增长率",
+        growth.map(function (d) { return d.v; }), C.accent, { width: 1.9 })]
+    });
+
+    /* ---- 表格 ---- */
+    var picks = [1960, 1970, 1980, 1990, 2000, 2010, 2020, 2021, 2022, 2025];
+    var tb = $("tbl").querySelector("tbody");
+    picks.forEach(function (y) {
+      if (pop.data[String(y)] === undefined) return;
+      var p = pop.data[String(y)];
+      var ch = chg.data[String(y)];
+      var g = growth.filter(function (d) { return d.y === y; })[0];
+      var tr = document.createElement("tr");
+      tr.innerHTML = "<td>" + y + "</td>"
+        + '<td class="num">' + (p / 1e4).toFixed(0) + "</td>"
+        + '<td class="num">' + (ch === undefined ? "—"
+            : (ch >= 0 ? "+" : "\u2212") + Math.abs(ch / 1e4).toFixed(0)) + "</td>"
+        + '<td class="num">' + (g ? (g.v >= 0 ? "+" : "") + g.v.toFixed(2) + "%" : "—") + "</td>";
+      tb.appendChild(tr);
+    });
+
+    window.addEventListener("resize", function () {
+      [c1, c2, c3].forEach(function (c) { c.resize(); });
+    });
+  }).catch(function (e) { CHP.fail($("content"), e.message); });
+})();
+</script>
+</body>
+</html>
