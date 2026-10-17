@@ -1,0 +1,9 @@
+# 原始 API 响应缓存（抓取脚本自动生成，不需要发布）
+tools/cache/
+
+# 本机一次性部署脚本
+setup-pages.ps1
+run-setup.bat
+
+# 截图与临时产物
+*.png

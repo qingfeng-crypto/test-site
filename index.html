@@ -3,18 +3,297 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>test-site</title>
-<style>
-body { font-family: -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif; min-height: 100vh; display: flex; align-items: center; justify-content: center; margin: 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; }
-.card { background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25); border-radius: 16px; padding: 40px 56px; text-align: center; backdrop-filter: blur(10px); }
-h1 { font-size: 2.4rem; margin: 0 0 12px; }
-p { margin: 0; opacity: 0.9; }
-</style>
+<title>中国人口数据 · 1960—2025</title>
+<meta name="description" content="基于世界银行公开数据的中国人口观测：总量、年龄结构、出生死亡与城镇化。">
+<link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-<div class="card">
-  <h1>🎉 Hello!</h1>
-  <p>GitHub Pages 生效了！</p>
-</div>
+
+<header class="site-head">
+  <div class="wrap">
+    <div class="brand">
+      <span class="brand-mark">中国人口数据</span>
+      <span class="brand-sub">1960—2025 · 世界银行公开数据</span>
+    </div>
+    <nav class="site-nav">
+      <a href="index.html" class="on">总览</a>
+      <a class="off">总量与增长</a>
+      <a class="off">年龄与老龄化</a>
+      <a class="off">出生与死亡</a>
+      <a class="off">分省与流动</a>
+      <a class="off">数据说明</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="hero-kicker">Overview</p>
+    <h1>十四亿人的转折点</h1>
+    <p class="hero-lead" id="lead">正在读取数据…</p>
+  </div>
+</section>
+
+<main class="wrap" id="main">
+  <div class="loading" id="loading">正在加载数据…</div>
+  <div id="content" style="display:none">
+
+    <div class="kpi-row">
+      <div class="kpi">
+        <p class="kpi-label">年末总人口 <span class="kpi-year" id="k1y"></span></p>
+        <div class="kpi-value"><span id="k1">—</span><span class="unit">亿</span></div>
+        <p class="kpi-note" id="k1n"></p>
+      </div>
+      <div class="kpi">
+        <p class="kpi-label">较上年 <span class="kpi-year" id="k2y"></span></p>
+        <div class="kpi-value"><span id="k2">—</span><span class="unit">万人</span></div>
+        <p class="kpi-note" id="k2n"></p>
+      </div>
+      <div class="kpi">
+        <p class="kpi-label">自然增长率 <span class="kpi-year" id="k3y"></span></p>
+        <div class="kpi-value"><span id="k3">—</span><span class="unit">‰</span></div>
+        <p class="kpi-note" id="k3n"></p>
+      </div>
+      <div class="kpi">
+        <p class="kpi-label">65 岁及以上占比 <span class="kpi-year" id="k4y"></span></p>
+        <div class="kpi-value"><span id="k4">—</span><span class="unit">%</span></div>
+        <p class="kpi-note" id="k4n"></p>
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>总量：从高速增长到持续收缩</h2>
+        <p>1960 年以来全国人口总量的变化。曲线在 2021 年到达顶点，此后掉头向下。</p>
+      </div>
+      <div class="chart" id="chart-total"></div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>增量：每年多出或减少了多少人</h2>
+        <p>由年末总人口逐年差分得出。最近几年均为负值。注：1962 年的陡增承接的是前一年的非常规低谷，与近年的趋势不可直接比较。</p>
+      </div>
+      <div class="chart short" id="chart-change"></div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>出生与死亡：两条线的交叉</h2>
+        <p>出生率跌破死亡率之后，人口自然增长由正转负。这一交叉发生在 2022 年前后。</p>
+      </div>
+      <div class="chart short" id="chart-rates"></div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>接下来</h2>
+        <p>本页是总览。四个专题页会逐层展开——每一个都从一张图开始，给一个结论。</p>
+      </div>
+      <div class="next-grid">
+        <div class="next-card">
+          <p class="t">总量与增长</p>
+          <p class="d">完整的年度序列、增长高峰与拐点定位。</p>
+          <span class="badge">建设中</span>
+        </div>
+        <div class="next-card">
+          <p class="t">年龄与老龄化</p>
+          <p class="d">人口金字塔、抚养比、老年人口占比走势。</p>
+          <span class="badge">建设中</span>
+        </div>
+        <div class="next-card">
+          <p class="t">出生与死亡</p>
+          <p class="d">生育率、世代更替水平、死亡率结构。</p>
+          <span class="badge">建设中</span>
+        </div>
+        <div class="next-card">
+          <p class="t">分省与流动</p>
+          <p class="d">2020 年七普各省人口、城镇化差异。</p>
+          <span class="badge">建设中</span>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <p><strong>数据来源</strong>　World Bank Open Data，指标 <span id="src-list">—</span>，遵循 CC BY 4.0 许可。抓取时间 <span id="src-time">—</span>。</p>
+    <p><strong>口径说明</strong>　<span id="src-caveat">—</span></p>
+    <p>本站为静态数据展示页面，所有数字在抓取时固化，不随页面刷新变化。数据更新需重新运行抓取脚本。</p>
+  </div>
+</footer>
+
+<script src="assets/js/echarts.min.js"></script>
+<script src="assets/js/common.js"></script>
+<script>
+(function () {
+  "use strict";
+  var $ = function (id) { return document.getElementById(id); };
+
+  CHP.load().then(function (D) {
+    var S = D.series, C = CHP.C;
+
+    $("loading").style.display = "none";
+    $("content").style.display = "";
+
+    /* ---- KPI ---- */
+    var pop = S.population, chg = S.annual_change,
+        ngr = S.natural_rate, old = S.age_65_up;
+
+    var popLast = CHP.last(pop), popPeak = CHP.peak(pop);
+    var chgLast = CHP.last(chg), ngrLast = CHP.last(ngr), oldLast = CHP.last(old);
+
+    $("k1y").textContent = popLast.year;
+    $("k1").textContent = CHP.yi(popLast.value);
+    $("k1n").textContent = "峰值 " + CHP.yi(popPeak.value) + " 亿（" + popPeak.year + "）";
+
+    $("k2y").textContent = chgLast.year;
+    $("k2").textContent = CHP.signed(chgLast.value / 1e4, 0);
+    $("k2n").innerHTML = '<span class="' + (chgLast.value < 0 ? "down" : "") + '">'
+      + (chgLast.value < 0 ? "连续负增长" : "仍在增长") + "</span>";
+
+    $("k3y").textContent = ngrLast.year;
+    $("k3").textContent = CHP.signed(ngrLast.value, 2);
+    $("k3n").innerHTML = '<span class="down">出生率低于死亡率</span>';
+
+    $("k4y").textContent = oldLast.year;
+    $("k4").textContent = oldLast.value.toFixed(2);
+    var oldVals = CHP.yearList(old).map(function (y) { return old.data[String(y)]; });
+    var delta = oldLast.value - oldVals[Math.max(0, oldVals.length - 11)];
+    $("k4n").textContent = "十年上升 " + delta.toFixed(1) + " 个百分点";
+
+    /* ---- 结论句 ---- */
+    $("lead").innerHTML =
+      "中国人口在 <strong>" + popPeak.year + " 年达到 " + CHP.yi(popPeak.value) + " 亿</strong>的峰值，"
+      + "此后连续下降。" + popLast.year + " 年末为 " + CHP.yi(popLast.value) + " 亿，"
+      + "比上年减少 " + Math.abs(chgLast.value / 1e4).toFixed(0) + " 万人；"
+      + ngrLast.year + " 年自然增长率 <em>" + CHP.signed(ngrLast.value, 2) + "‰</em>，"
+      + "出生率已低于死亡率。同时 65 岁及以上人口占比升至 "
+      + oldLast.value.toFixed(1) + "%。";
+
+    /* ---- 图 1：总人口 ---- */
+    var ys = CHP.yearList(pop), vals = CHP.values(pop, ys);
+    var sTotal = CHP.lineSeries("总人口",
+      vals.map(function (v) { return +(v / 1e8).toFixed(3); }),
+      C.accent, { width: 2.2, area: true });
+    sTotal.markPoint = {
+      symbol: "circle", symbolSize: 8,
+      itemStyle: { color: C.warm },
+      label: {
+        show: true,
+        position: "left",
+        distance: 12,
+        formatter: popPeak.year + " 峰值 " + CHP.yi(popPeak.value) + " 亿",
+        color: C.ink2,
+        fontSize: 12,
+        fontFamily: CHP.FONT,
+        backgroundColor: "#ffffff",
+        borderColor: C.line,
+        borderWidth: 1,
+        borderRadius: 2,
+        padding: [4, 8]
+      },
+      data: [{ coord: [String(popPeak.year), popPeak.value / 1e8] }]
+    };
+    var c1 = echarts.init($("chart-total"));
+    c1.setOption({
+      grid: { left: 58, right: 34, top: 34, bottom: 42 },
+      tooltip: CHP.tooltipCommon({
+        trigger: "axis",
+        formatter: function (ps) {
+          var p = ps[0];
+          return "<b>" + p.axisValue + " 年</b><br/>总人口 " + Number(p.value).toFixed(2) + " 亿";
+        }
+      }),
+      xAxis: CHP.axisCommon({
+        type: "category", boundaryGap: false, data: ys,
+        axisLabel: { color: C.ink3, fontSize: 11.5, interval: 9, margin: 12 }
+      }),
+      yAxis: CHP.axisCommon({
+        type: "value", min: 0, max: 15.2, name: "亿人", nameGap: 18
+      }),
+      series: [sTotal]
+    });
+
+    /* ---- 图 2：年增量 ---- */
+    var ys2 = CHP.yearList(chg), vals2 = CHP.values(chg, ys2);
+    var c2 = echarts.init($("chart-change"));
+    c2.setOption({
+      grid: { left: 58, right: 34, top: 26, bottom: 42 },
+      tooltip: CHP.tooltipCommon({
+        trigger: "axis",
+        formatter: function (ps) {
+          var p = ps[0], v = Number(p.value);
+          return "<b>" + p.axisValue + " 年</b><br/>较上年 "
+            + (v >= 0 ? "+" : "\u2212") + Math.abs(v).toFixed(0) + " 万人";
+        }
+      }),
+      xAxis: CHP.axisCommon({
+        type: "category", data: ys2,
+        axisLabel: { color: C.ink3, fontSize: 11.5, interval: 9, margin: 12 }
+      }),
+      yAxis: CHP.axisCommon({ type: "value", name: "万人", nameGap: 18 }),
+      series: [{
+        type: "bar", name: "年增量", barWidth: "62%",
+        data: vals2.map(function (v) {
+          return {
+            value: +(v / 1e4).toFixed(0),
+            itemStyle: { color: v >= 0 ? C.accent2 : C.warm, opacity: v >= 0 ? 0.82 : 0.9 }
+          };
+        })
+      }]
+    });
+
+    /* ---- 图 3：出生率 / 死亡率 / 自然增长率 ---- */
+    var ybr = CHP.yearList(S.birth_rate);
+    var ydr = CHP.yearList(S.death_rate);
+    var y3 = ybr.filter(function (y) {
+      return ydr.indexOf(y) >= 0 && S.natural_rate.data[String(y)] !== undefined;
+    });
+
+    var c3 = echarts.init($("chart-rates"));
+    c3.setOption({
+      grid: { left: 58, right: 34, top: 46, bottom: 42 },
+      legend: {
+        top: 2, right: 4, itemWidth: 14, itemHeight: 2, itemGap: 18,
+        textStyle: { color: C.ink2, fontSize: 12, fontFamily: CHP.FONT }
+      },
+      tooltip: CHP.tooltipCommon({
+        trigger: "axis",
+        valueFormatter: function (v) {
+          return v === null || v === undefined ? "—" : Number(v).toFixed(2) + "‰";
+        }
+      }),
+      xAxis: CHP.axisCommon({
+        type: "category", boundaryGap: false, data: y3,
+        axisLabel: { color: C.ink3, fontSize: 11.5, interval: 9, margin: 12 }
+      }),
+      yAxis: CHP.axisCommon({ type: "value", name: "‰", nameGap: 18 }),
+      series: [
+        CHP.lineSeries("出生率", CHP.values(S.birth_rate, y3), C.accent, { width: 1.9 }),
+        CHP.lineSeries("死亡率", CHP.values(S.death_rate, y3), C.warm, { width: 1.9 }),
+        CHP.lineSeries("自然增长率", CHP.values(S.natural_rate, y3), C.ink3, { width: 1.5 })
+      ]
+    });
+
+    /* ---- 页脚 ---- */
+    $("src-list").textContent =
+      "SP.POP.TOTL / SP.DYN.CBRT.IN / SP.DYN.CDRT.IN / SP.POP.0014.TO.ZS / " +
+      "SP.POP.1564.TO.ZS / SP.POP.65UP.TO.ZS / SP.URB.TOTL.IN.ZS / SP.DYN.TFRT.IN";
+    $("src-time").textContent = D.meta.fetched_at.replace("T", " ").slice(0, 19);
+    $("src-caveat").textContent = D.meta.caveat;
+
+    var charts = [c1, c2, c3];
+    window.addEventListener("resize", function () {
+      charts.forEach(function (c) { c.resize(); });
+    });
+  }).catch(function (e) {
+    $("loading").style.display = "none";
+    CHP.fail($("main"), e.message);
+  });
+})();
+</script>
 </body>
 </html>
